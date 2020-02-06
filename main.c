@@ -15,7 +15,7 @@ struct pic{
   struct color data[HEIGHT][WIDTH];
 };
 
-void drawLine(struct pic* p, int x1, int y1, int x2, int y2, int r, int g, int b);
+void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b);
 void drawPic(struct pic* p, char* fileName);
 
 int main(){
@@ -23,6 +23,7 @@ int main(){
 
   drawLine(p,100,80,140,110,255,0,0); //Testing octant I
   drawLine(p,100,80,140,130,0,255,0); //Testing octant II
+  drawLine(p,100,80,60,30,0,0,255); //Testing octant III
   drawLine(p,100,80,140,50,0,0,255); //Testing octant VIII
   drawLine(p,100,80,140,30,255,0,255); //Testing octant VII
 
@@ -31,7 +32,7 @@ int main(){
   return 0;
 }
 
-void drawLine(struct pic* p, int x1, int y1, int x2, int y2, int r, int g,int b){
+void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b){
   int dx = x2 - x1;
   int dy = y2 - y1;
   double m = (double)dy/(double)dx;
@@ -49,7 +50,7 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, int r, int g,int b)
 
   printf("%f\n", m);
 
-  if(dx > 0){
+  if(dx >= 0){
     if(m > 0 && m <= 1){ //In octant I
       printf("Octant I\n");
       d = (2 * A) + B;
@@ -97,6 +98,68 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, int r, int g,int b)
     }
     if(m < -1){
       printf("Octant VII\n");
+      d = A - (2 * B);
+
+      while( y >= y2){
+        p->data[y][x] = c;
+
+        if(d > 0){
+          x++;
+          d += (2 * A);
+        }
+        y--;
+        d -= (2 * B);
+      }
+    }
+  }
+  else if( dx < 0 ){
+    if(m > 0 && m <= 1){ //In octant I
+      printf("Octant IV\n");
+      d = (2 * A) - B;
+
+      while(x >= x2){
+        p->data[y][x] = c;
+
+        if(d > 0){
+          y++;
+          d += (2 * B);
+        }
+        x--;
+        d -= 2 * A;
+      }
+    }
+    if(m > 1){ //In octant II
+      printf("Octant III\n");
+      d = A - (2 * B);
+
+      while(y <= y2){
+        p->data[y][x] = c;
+
+        if(d <= 0){
+          x--;
+          d -= (2 * A);
+        }
+        y++;
+        d += (2 * B);
+      }
+    }
+    if(m < 0 && m >= -1){ //In octant VIII
+      printf("Octant V\n");
+      d = (2 * A) - B;
+
+      while(x <= x2){
+        p->data[y][x] = c;
+
+        if(d <= 0){
+          y--;
+          d -= (2 * B);
+        }
+        x++;
+        d += (2 * A);
+      }
+    }
+    if(m < -1){
+      printf("Octant VI\n");
       d = A - (2 * B);
 
       while( y >= y2){
