@@ -66,9 +66,10 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, un
 
   m = (double)dy/(double)dx;
 
-  //printf("%f\n", m);
+  printf("dx: %d dy %d\n", dx,dy);
+  printf("%f\n", m);
 
-  if(m > 0 && m <= 1){ //In octant I
+  if(m >= 0 && m <= 1){ //In octant I
     //printf("Octant I\n");
     d = (2 * A) + B;
 
@@ -98,7 +99,7 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, un
       d += (2 * B);
     }
   }
-  if(m < 0 && m >= -1){ //In octant VIII
+  if(m <= 0 && m >= -1){ //In octant VIII
     //printf("Octant VIII\n");
     d = (2 * A) - B;
 
@@ -128,6 +129,7 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, un
       d -= (2 * B);
     }
   }
+  printf("\n");
 }
 
 void drawPic(struct pic* p, char* fileName){
