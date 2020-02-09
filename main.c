@@ -30,6 +30,17 @@ int main(){
   drawLine(p,120,80,160,130,255,255,255); //Testing octant VII
   drawLine(p,120,80,160,110,128,128,128); //Testing octant VIII
 
+  //Edge cases
+
+  drawLine(p,120,80,180,80,200,200,200);
+  drawLine(p,120,80,180,20,200,200,200);
+  drawLine(p,120,80,120,20,200,200,200);
+  drawLine(p,120,80,60,20,200,200,200);
+  drawLine(p,120,80,60,80,200,200,200);
+  drawLine(p,120,80,60,140,200,200,200);
+  drawLine(p,120,80,120,140,200,200,200);
+  drawLine(p,120,80,180,140,200,200,200);
+
   drawPic(p, "pic.ppm");
 
   return 0;
@@ -64,12 +75,9 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, un
   A = dy;
   B = -dx;
 
-  m = (double)dy/(double)dx;
-
   printf("dx: %d dy %d\n", dx,dy);
-  printf("%f\n", m);
 
-  if(m >= 0 && m <= 1){ //In octant I
+  if(dy >= 0 && dx >= dy){ //In octant I
     //printf("Octant I\n");
     d = (2 * A) + B;
 
@@ -84,7 +92,7 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, un
       d += 2 * A;
     }
   }
-  if(m > 1){ //In octant II
+  else if(dy >= 0 && dx < dy){ //In octant II
     //printf("Octant II\n");
     d = A + (2 * B);
 
@@ -99,7 +107,7 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, un
       d += (2 * B);
     }
   }
-  if(m <= 0 && m >= -1){ //In octant VIII
+  else if(dy < 0 && dx >= (dy * -1)){ //In octant VIII
     //printf("Octant VIII\n");
     d = (2 * A) - B;
 
@@ -114,7 +122,7 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, un
       d += (2 * A);
     }
   }
-  if(m < -1){
+  else if(dy < 0 && dx < (dy * -1)){
     //printf("Octant VII\n");
     d = A - (2 * B);
 
