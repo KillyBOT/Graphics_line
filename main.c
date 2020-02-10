@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 #include <math.h>
 
 #define WIDTH 1000
@@ -24,9 +26,12 @@ void drawPic(struct pic* p, char* fileName);
 
 int main(){
   struct pic* p;
+  int f;
+  int stat;
 
   int coords[NODES][2];
   char name[32];
+  char exportName[32];
   double current = 0;
 
   double step = (2 * PI) / NODES;
@@ -66,10 +71,25 @@ int main(){
     drawLine(p,120,80,120,140,200,200,200);
     drawLine(p,120,80,180,140,200,200,200);*/
     sprintf(name,"pic_%d.ppm",drawStep);
+    sprintf(exportName, "pic_%d.png",drawStep);
 
     drawPic(p, name);
 
     free(p);
+
+    f = fork();
+    if(f){
+      waitpid(f, &stat, 0);
+    } else {
+      execlp("convert","convert", name, exportName, NULL);
+    }
+
+    f = fork();
+    if(f){
+      waitpid(f, &stat, 0);
+    } else {
+      execlp("rm", "rm", name, NULL);
+    }
   }
 
   return 0;
