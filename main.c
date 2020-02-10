@@ -3,8 +3,9 @@
 #include <unistd.h>
 #include <math.h>
 
-#define WIDTH 500
-#define HEIGHT 500
+#define WIDTH 1000
+#define HEIGHT 1000
+#define NODES 800
 
 #define PI 3.14159265359
 
@@ -22,48 +23,54 @@ void drawLine(struct pic* p, int x1, int y1, int x2, int y2, unsigned char r, un
 void drawPic(struct pic* p, char* fileName);
 
 int main(){
-  struct pic* p = malloc(sizeof(struct pic));
+  struct pic* p;
 
-  int coords[360][2];
+  int coords[NODES][2];
+  char name[32];
   double current = 0;
-  double step = PI / 180;
 
-  int nodes = 360;
-  int drawStep = 7;
-
-  for(int x = 0; x < 360; x++){
-    coords[x][0] = round(250 - (250 * cos(current)));
-    coords[x][1] = round(250 - (250 * sin(current)));
+  double step = (2 * PI) / NODES;
+  for(int x = 0; x < NODES; x++){
+    coords[x][0] = round((WIDTH / 2) - ((WIDTH / 2) * cos(current)));
+    coords[x][1] = round((HEIGHT / 2) - ((HEIGHT / 2) * sin(current)));
+    //printf("%d %d\n", coords[x][0],coords[x][1]);
     current += step;
   }
 
-  for(int currentPoint = 0; currentPoint < nodes; currentPoint++){
-    drawLine(p,coords[currentPoint][0],coords[currentPoint][1],coords[(currentPoint * drawStep) % nodes][0],coords[(currentPoint * drawStep) % nodes][1],255,255,255);
+  for(int drawStep = 2; drawStep < 100; drawStep++){
+    p = calloc(sizeof(struct pic),1);
+
+    for(int currentPoint = 0; currentPoint < NODES; currentPoint++){
+      drawLine(p,coords[currentPoint][0],coords[currentPoint][1],coords[(currentPoint * drawStep) % NODES][0],coords[(currentPoint * drawStep) % NODES][1],255,255,255);
+    }
+
+
+
+    /*drawLine(p,120,80,160,50,255,0,0); //Testing octant I
+    drawLine(p,120,80,160,30,0,255,0); //Testing octant II
+    drawLine(p,120,80,80,30,0,0,255); //Testing octant III
+    drawLine(p,120,80,80,50,255,0,255); //Testing octant IV
+    drawLine(p,120,80,80,110,0,255,255); //Testing octant V
+    drawLine(p,120,80,80,130,255,255,0); //Testing octant VI
+    drawLine(p,120,80,160,130,255,255,255); //Testing octant VII
+    drawLine(p,120,80,160,110,128,128,128); //Testing octant VIII
+
+    //Edge cases
+
+    drawLine(p,120,80,180,80,200,200,200);
+    drawLine(p,120,80,180,20,200,200,200);
+    drawLine(p,120,80,120,20,200,200,200);
+    drawLine(p,120,80,60,20,200,200,200);
+    drawLine(p,120,80,60,80,200,200,200);
+    drawLine(p,120,80,60,140,200,200,200);
+    drawLine(p,120,80,120,140,200,200,200);
+    drawLine(p,120,80,180,140,200,200,200);*/
+    sprintf(name,"pic_%d.ppm",drawStep);
+
+    drawPic(p, name);
+
+    free(p);
   }
-
-
-
-  /*drawLine(p,120,80,160,50,255,0,0); //Testing octant I
-  drawLine(p,120,80,160,30,0,255,0); //Testing octant II
-  drawLine(p,120,80,80,30,0,0,255); //Testing octant III
-  drawLine(p,120,80,80,50,255,0,255); //Testing octant IV
-  drawLine(p,120,80,80,110,0,255,255); //Testing octant V
-  drawLine(p,120,80,80,130,255,255,0); //Testing octant VI
-  drawLine(p,120,80,160,130,255,255,255); //Testing octant VII
-  drawLine(p,120,80,160,110,128,128,128); //Testing octant VIII
-
-  //Edge cases
-
-  drawLine(p,120,80,180,80,200,200,200);
-  drawLine(p,120,80,180,20,200,200,200);
-  drawLine(p,120,80,120,20,200,200,200);
-  drawLine(p,120,80,60,20,200,200,200);
-  drawLine(p,120,80,60,80,200,200,200);
-  drawLine(p,120,80,60,140,200,200,200);
-  drawLine(p,120,80,120,140,200,200,200);
-  drawLine(p,120,80,180,140,200,200,200);*/
-
-  drawPic(p, "pic.ppm");
 
   return 0;
 }
@@ -178,4 +185,6 @@ void drawPic(struct pic* p, char* fileName){
       }
     }
   }
+
+  fclose(f);
 }
